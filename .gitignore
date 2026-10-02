@@ -2,3 +2,8 @@
 .gradle/
 build/
 *.kexe.dSYM/
+.kotlin/
+.DS_Store
+.idea/
+
+logs/
