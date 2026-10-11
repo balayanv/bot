@@ -5,6 +5,6 @@ set -eu
 cd "$(dirname "$0")"
 
 
-./build.mac.sh
+./build.sh
 
 ./bin/bot sim nexa zit buy BTCB2_USDC 30

@@ -4,10 +4,10 @@ set -eu
 cd "$(dirname "$0")"
 
 
-./build.mac.sh
+./build.sh
 
 # export your keys before invoking, or prefix them on the command line:
 # export NEOXA_API_KEY=your_key
 # export NEOXA_API_SECRET=your_secret
 
-./bin/bot nexa zit buy BTCB2_USDC 4
+./bin/bot nexa zit buy BTCB2_BTC 2 10

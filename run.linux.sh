@@ -4,7 +4,7 @@ set -eu
 cd "$(dirname "$0")"
 
 
-./build.linux.sh
+./build.sh
 
 # export your keys before invoking, or prefix them on the command line:
 # export NEOXA_API_KEY=your_key

@@ -5,13 +5,12 @@ gradually convert spamcoin or fed stablecoins into bitcoin.
 
 The binaries are not provided deliberately, you should build your own binary from source and preferably review/contribute to it.
 
-I chose kotlin native as an experiment partially to keep the binary very minimal, 
-but to also try clojure style while keeping the code readable for humanoids. 
+It's kotlin on the JVM (needs JDK 17+), written in clojure style while keeping the code readable for humanoids. 
 
 I use/maintain mac versions of the repo, so all the testing is most solid for mac, linux users should have no issues either.
 If you're using microslop products i cannot provide any guarantees (i feel for you).
 
-There is a `build.$platform.sh` for each OS that will guide you to build your binary.
+`build.sh` (mac/linux) or `build.microslop.bat` (windows) builds `bin/bot` (a launcher for `bin/bot.jar`).
 There is a `run.$platform.sh` which has the hardcoded parameters that you are encouraged to modify and use for yourself.
 
 ## Zero Impact Trade (zit)
@@ -81,6 +80,12 @@ The program will be explaining itself as it runs, what its trying to do and what
 You can think of DEBUG logs as comments/reasoning what the program is trying to do.
 INFO logs are actual important events when something of importance happens.
 TRACE is for cases where you want to see absolutely everything, including http calls with the body etc...
+ERROR lines are failures: api errors (retried), auth failures (fatal), crashes.
+
+Everything printed is also written to rolling log files under `logs/` (relative to where the bot is started),
+one family per command, e.g. `logs/nexa-buy-BTCB2_USDC.log` always points at the newest file of
+`logs/nexa-buy-BTCB2_USDC.<date>.<n>.log`. A new file starts on every launch, every UTC day and every 10MB;
+the newest 100 are kept. Sim runs log to `logs/sim-<venue>-....log`.
 
 ## Example commands
 
@@ -95,18 +100,6 @@ or export them once in your shell:
 ```
 export NEOXA_API_KEY=your_key
 export NEOXA_API_SECRET=your_secret
-```
-
-exchange commands:
-
-```
-./bin/bot nexa balances
-./bin/bot nexa orders
-./bin/bot nexa orders partial BTCB2_USDC
-./bin/bot nexa history 20
-./bin/bot nexa order <order_id>
-./bin/bot nexa place BTCB2_USDC buy 0.1 400 postonly
-./bin/bot nexa cancel <order_id>
 ```
 
 zero impact trades:
@@ -133,6 +126,13 @@ simulation, no keys needed, virtual clock runs days in seconds (this is used for
 run.microslop.bat
 ```
 
+## Tests
+
+`./gradlew test` runs the Cucumber scenarios in `src/test/resources/features`. Every piece is a
+function from data to data, so a scenario is just "given this map (JSON), when this function runs,
+then the result matches this map": venue request building and signing, parsing real exchange
+responses, zit's per-tick decisions, and whole runs against the simulator.
+
 ## Where to start
 
 Ideally use a clanker (an LLM) of your choice and pick the right `run.$platform` file for your system and fix any missing dependencies until it runs.
@@ -149,6 +149,5 @@ I will try to make this more accessible for non programmers over time.
 
 ## Coming next
 
-- support for nonkyc
 - support for zit to run for multiple pairs at the same time and trade on the most efficient one at a time
 - ruthless cleanup of code and proper deterministic testing
